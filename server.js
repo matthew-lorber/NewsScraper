@@ -2,6 +2,7 @@
 var cheerio = require("cheerio");
 // Makes HTTP request for HTML page
 var axios = require("axios");
+var app = require("express");
 
 // First, tell the console what server.js is doing
 console.log("\n***********************************\n" +

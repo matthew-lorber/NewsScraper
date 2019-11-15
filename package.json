@@ -4,7 +4,8 @@
   "description": "Rutgers University Full Stack Bootcamp Week 9 Assignment. Mongo Express Cheerio Axios",
   "main": "index.js",
   "scripts": {
-    "test": "testThis"
+    "test": "testThis",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -39,5 +40,8 @@
     "express-handlebars": "^3.1.0",
     "mongojs": "^3.1.0",
     "mongoose": "^5.7.11"
+  },
+  "engines": {
+    "node": "12.13.0"
   }
 }

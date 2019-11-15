@@ -3,7 +3,9 @@ var cheerio = require("cheerio");
 // Makes HTTP request for HTML page
 var axios = require("axios");
 var app = require("express");
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
 
+mongoose.connect(MONGODB_URI);
 // First, tell the console what server.js is doing
 console.log("\n***********************************\n" +
             "Grabbing every thread name and link\n" +
@@ -11,7 +13,7 @@ console.log("\n***********************************\n" +
             "\n***********************************\n");
 
 // Making a request via axios for reddit's "webdev" board. The page's HTML is passed as the callback's third argument
-axios.get("https://old.reddit.com/r/webdev/").then(function(response) {
+axios.get("https://www.washingtonpost.com/").then(function(response) {
 
   // Load the HTML into cheerio and save it to a variable
   // '$' becomes a shorthand for cheerio's selector commands, much like jQuery's '$'

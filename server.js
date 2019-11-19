@@ -1,19 +1,41 @@
-// Parses our HTML and helps us find elements
-var cheerio = require("cheerio");
-// Makes HTTP request for HTML page
-var axios = require("axios");
-var app = require("express");
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+/* CONNECTION */
+//const db = require("./models");
+const fs = require("fs");
+const moment = require("moment");
+const express = require('express');
+const exphbs  = require('express-handlebars');
+const logger = require("morgan");
+const mongoose = require("mongoose");
+const cheerio = require("cheerio");
+const axios = require("axios");
+const date = moment(new Date()).format('MMMM-Do-YYYY-h-mm-a');
+const PORT = 3000;
+const app = express();
 
-mongoose.connect(MONGODB_URI);
-// First, tell the console what server.js is doing
-console.log("\n***********************************\n" +
-            "Grabbing every thread name and link\n" +
-            "from reddit's webdev board:" +
-            "\n***********************************\n");
+const databaseUrl = "newsScraper";
+const collections = ["articles"];
 
-// Making a request via axios for reddit's "webdev" board. The page's HTML is passed as the callback's third argument
-axios.get("https://www.washingtonpost.com/").then(function(response) {
+// Hook our mongojs config to the db var
+//const db = mongoose(databaseUrl, collections);
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+// mongo dbh22.mlab.com:27227/heroku_k8jx94m2 -u <dbuser> -p <dbpassword>
+mongoose.connect(MONGODB_URI, {useNewUrlParser:true, useUnifiedTopology:true});
+console.log("*** scraping headlines ***", date);
+
+/* MIDDLEWARE */
+app.use(logger("dev"));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static("public"));
+app.engine('handlebars', exphbs());
+app.set('view engine', 'handlebars');
+
+/* ROUTES */
+//app.get("/scrape", (req, res) => {
+
+/* GET ROUTE */
+// Making a request via axios for main page. The page's HTML is passed as the callback's third argument
+axios.get("https://www.washingtonpost.com/").then((response) => {
 
   // Load the HTML into cheerio and save it to a variable
   // '$' becomes a shorthand for cheerio's selector commands, much like jQuery's '$'
@@ -22,18 +44,14 @@ axios.get("https://www.washingtonpost.com/").then(function(response) {
   // An empty array to save the data that we'll scrape
   var results = [];
 
-  // With cheerio, find each p-tag with the "title" class
-  // (i: iterator. element: the current element)
-  $("p.title").each(function(i, element) {
+  // USE CHEERIO TO ITERATE THRU <a> TAGS
+  $("a").each(function(i, element) {
 
-    // Save the text of the element in a "title" variable
+    // SAVE HEADLINE AND LINK
     var title = $(element).text();
+    var link = $(element).attr("href");
 
-    // In the currently selected element, look at its child elements (i.e., its a-tags),
-    // then save the values for any "href" attributes that the child elements may have
-    var link = $(element).children().attr("href");
-
-    // Save these results in an object that we'll push into the results array we defined earlier
+    // SAVE RESULTS TO ARRAY
     results.push({
       title: title,
       link: link
@@ -42,8 +60,10 @@ axios.get("https://www.washingtonpost.com/").then(function(response) {
 
   // Log the results once you've looped through each of the elements found with cheerio
   console.log(results);
+  //fs.appendFileSync("WP-Headlines-" + date + ".txt", JSON.stringify(results));
+  //db.insert(results);
 });
-
+//});
 ///////////////////////////////////////////////
 
 /* global bootbox */

@@ -1,5 +1,3 @@
-/* CONNECTION */
-//const db = require("./models");
 const fs = require("fs");
 const moment = require("moment");
 const express = require('express');
@@ -9,16 +7,10 @@ const mongoose = require("mongoose");
 const cheerio = require("cheerio");
 const axios = require("axios");
 const date = moment(new Date()).format('MMMM-Do-YYYY-h-mm-a');
-const PORT = 3000;
 const app = express();
-
 const databaseUrl = "newsScraper";
 const collections = ["articles"];
-
-// Hook our mongojs config to the db var
-//const db = mongoose(databaseUrl, collections);
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
-// mongo dbh22.mlab.com:27227/heroku_k8jx94m2 -u <dbuser> -p <dbpassword>
 mongoose.connect(MONGODB_URI, {useNewUrlParser:true, useUnifiedTopology:true});
 console.log("*** scraping headlines ***", date);
 
